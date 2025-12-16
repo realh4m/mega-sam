@@ -93,9 +93,8 @@ if __name__ == '__main__':
   model = torch.nn.DataParallel(RAFT(args))
   model.load_state_dict(torch.load(args.model))
   print(f'Loaded checkpoint at {args.model}')
-  flow_model = model.module
-  flow_model.cuda()  # .eval()
-  flow_model.eval()
+  model.cuda()
+  model.eval()
 
   scene_name = args.scene_name
   image_list = sorted(
@@ -166,7 +165,7 @@ if __name__ == '__main__':
         else:
           flow_init = None
 
-        flow_low, flow_up, _ = flow_model(
+        flow_low, flow_up, _ = model(
             torch.cat([image1, image2], dim=0),
             torch.cat([image2, image1], dim=0),
             iters=22,
